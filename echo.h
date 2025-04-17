@@ -1,7 +1,7 @@
 #ifndef ECHO_H
 #define ECHO_H
 
-#define DEFAULT_PORT 3000
+#define DEFAULT_PORT 8080
 #define LISTEN_BACKLOG 5
 extern int print_val;
 
