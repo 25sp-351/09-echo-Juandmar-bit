@@ -36,8 +36,6 @@ void* handle_connection(int* client_socket) {
             printf("Client on thread %p requested to quit.\n", pthread_self());
             break;
         }
-        close(accepted_socket);
-        pthread_exit(NULL);
         memset(buffer, 0, sizeof(buffer)); // Clear the buffer
     }
     if (bytes_received < 0) {
@@ -46,5 +44,6 @@ void* handle_connection(int* client_socket) {
     }
     printf("Client disconnected.\n");
     close(accepted_socket);
+    pthread_exit(NULL);
     return NULL;
 }
