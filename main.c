@@ -8,6 +8,11 @@
 #include <pthread.h>
 #include "echo.h"
 
+void sigint_handler(int sig) {
+    printf("Sever shutting down...\n");
+    exit(0);
+}
+
 int main (int argc, char *argv[]) {
 
     int port = DEFAULT_PORT;
@@ -49,6 +54,13 @@ int main (int argc, char *argv[]) {
     server_addr.sin_addr.s_addr = htonl(INADDR_LOOPBACK); // bind to localhost
     server_addr.sin_port = htons(port); // convert port number to network byte order
     printf("Binding to port %d...\n", port); 
+    
+    printf("Press Ctrl+C to stop the server.\n");
+    if (signal(SIGINT, sigint_handler)) {
+        perror("Error setting up signal handler");
+        close(socket_fd);
+        exit(EXIT_FAILURE);
+    }
 
     int return_value = bind(socket_fd, (struct sockaddr *)&server_addr, sizeof(server_addr));
     if (return_value < 0) {
@@ -73,5 +85,6 @@ int main (int argc, char *argv[]) {
 
         pthread_create(&thread, NULL, (void* (*) (void*))handle_connection, (void*)client_fd_buf);
     }
+    printf("Server closed.\n");
     return 0;
 }
